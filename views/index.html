@@ -64,6 +64,7 @@
         <button type="submit">Delete Issue</button>
       </form>
       <code id='jsonResult'></code>
+      <p id="errorMsg"></p>
     </div>
     <hr style='margin: 50px; margin-top: 200px'>
     <!-- Your web-app is https, so your scripts need to be too -->
@@ -79,6 +80,9 @@
             data: $('#testForm').serialize(),
             success: function(data) {
               $('#jsonResult').text(JSON.stringify(data));
+            },
+            error: function(res) {
+              $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
           e.preventDefault();
