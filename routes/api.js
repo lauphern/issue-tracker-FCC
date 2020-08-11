@@ -50,10 +50,12 @@ module.exports = function (app) {
           db.collection(project)
             .insertOne(newIssue)
             .then(doc => {
-              return db.collection(project).findOne({_id: doc.insertedId})
-              .then(doc => {
-                res.json(doc)
-              })
+              return db
+                .collection(project)
+                .findOne({ _id: doc.insertedId })
+                .then(doc => {
+                  res.json(doc);
+                });
             })
             .catch(err => {
               res.status(500).send("Something went wrong! The issue couldn't be created");
@@ -65,21 +67,57 @@ module.exports = function (app) {
 
     .put(function (req, res) {
       const project = req.params.project;
+      const { issue_title, issue_text, created_by, assigned_to, status_text } = req.body;
+      const newIssue = {
+        issue_title,
+        issue_text,
+        created_by,
+        assigned_to,
+        status_text,
+        open: true,
+        created_on: new Date(),
+        updated: new Date(),
+      };
+      if (!req.body.issue_title || !req.body.issue_text || !req.body.created_by) {
+        res.status(500).send("Fill in all the required inputs please");
+        throw new Error("Fill in the required inputs");
+      }
+      MongoClient.connect(CONNECTION_STRING, (err, db) => {
+        if (err) throw new Error("Couldn't connect to the database");
+        else {
+          db.collection(project)
+            .insertOne(newIssue)
+            .then(doc => {
+              return db
+                .collection(project)
+                .findOne({ _id: doc.insertedId })
+                .then(doc => {
+                  res.json(doc);
+                });
+            })
+            .catch(err => {
+              res.status(500).send("Something went wrong! The issue couldn't be created");
+              throw new Error("Couldn't create the issue");
+            });
+        }
+      });
     })
 
     .delete(function (req, res) {
       const project = req.params.project;
-      if(!req.body._id) {
-        res.status(500).send("Please provide an issue's _id.");
+      if (!req.body._id || !ObjectId.isValid(req.body._id)) {
+        res.status(500).send("Please provide a valid issue's _id.");
         throw new Error("_id error");
       }
       MongoClient.connect(CONNECTION_STRING, (err, db) => {
         if (err) throw new Error("Couldn't connect to the database");
         else {
           db.collection(project)
-            .remove({_id: new ObjectId(req.body._id)})
-            .then(() => {
-              res.json(`deleted ${req.body._id}`)
+            .findOneAndDelete({ _id: new ObjectId(req.body._id) })
+            .then(result => {
+              console.log(result)
+              if(!result.value) throw new Error()
+              else res.json(`deleted ${result.value._id}`);
             })
             .catch(err => {
               res.status(500).send("Something went wrong! The issue couldn't be deleted");
