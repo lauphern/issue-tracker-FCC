@@ -94,6 +94,9 @@
             data: $('#testForm2').serialize(),
             success: function(data) {
               $('#jsonResult').text(JSON.stringify(data));
+            },
+            error: function(res) {
+              $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
           e.preventDefault();
@@ -105,6 +108,9 @@
             data: $('#testForm3').serialize(),
             success: function(data) {
               $('#jsonResult').text(JSON.stringify(data));
+            },
+            error: function(res) {
+              $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
           e.preventDefault();
