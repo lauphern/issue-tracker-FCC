@@ -11,6 +11,21 @@ var runner            = require('./test-runner');
 
 var app = express();
 
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": ["'self'", 'https://code.jquery.com', "'unsafe-inline'"],
+      "connect-src": ["'self'"],
+      "img-src": ["'self'"],
+      "style-src": ["'self'", "'unsafe-inline'"],
+      "base-uri": ["'self'"],
+      "form-action": ["'self'"],
+    },
+  })
+);
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
