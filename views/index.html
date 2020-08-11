@@ -79,9 +79,11 @@
             type: 'post',
             data: $('#testForm').serialize(),
             success: function(data) {
+              $('#errorMsg').text("");
               $('#jsonResult').text(JSON.stringify(data));
             },
             error: function(res) {
+              $('#jsonResult').text("");
               $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
@@ -93,9 +95,11 @@
             type: 'put',
             data: $('#testForm2').serialize(),
             success: function(data) {
+              $('#errorMsg').text("");
               $('#jsonResult').text(JSON.stringify(data));
             },
             error: function(res) {
+              $('#jsonResult').text("");
               $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
@@ -107,9 +111,11 @@
             type: 'delete',
             data: $('#testForm3').serialize(),
             success: function(data) {
+              $('#errorMsg').text("");
               $('#jsonResult').text(JSON.stringify(data));
             },
             error: function(res) {
+              $('#jsonResult').text("");
               $('#errorMsg').text(JSON.stringify(res.responseText));
             }
           });
