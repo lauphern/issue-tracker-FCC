@@ -15,16 +15,26 @@ const ObjectId = require("mongodb").ObjectID;
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
-  // MongoClient.connect(CONNECTION_STRING, (err, db) => {
-  //   db.collection("projects").insertOne({name: "prueba2"})
-  //   .then(doc => console.dir(doc))
-  //   .catch(err => console.dir(err))
-  // })
   app
     .route("/api/issues/:project")
 
     .get(function (req, res) {
       const project = req.params.project;
+      MongoClient.connect(CONNECTION_STRING, (err, db) => {
+        if (err) throw new Error("Couldn't connect to the database");
+        else {
+          db.collection(project)
+            .find({})
+            .toArray()
+            .then(docArr => {
+              res.json(docArr);
+            })
+            .catch(err => {
+              res.status(500).send("Something went wrong! No issues were found");
+              throw new Error("No issues were found");
+            });
+        }
+      });
     })
 
     .post(function (req, res) {
