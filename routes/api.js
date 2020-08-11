@@ -69,5 +69,23 @@ module.exports = function (app) {
 
     .delete(function (req, res) {
       const project = req.params.project;
+      if(!req.body._id) {
+        res.status(500).send("Please provide an issue's _id.");
+        throw new Error("_id error");
+      }
+      MongoClient.connect(CONNECTION_STRING, (err, db) => {
+        if (err) throw new Error("Couldn't connect to the database");
+        else {
+          db.collection(project)
+            .remove({_id: new ObjectId(req.body._id)})
+            .then(() => {
+              res.json(`deleted ${req.body._id}`)
+            })
+            .catch(err => {
+              res.status(500).send("Something went wrong! The issue couldn't be deleted");
+              throw new Error(`Could not delete ${req.body._id}`);
+            });
+        }
+      });
     });
 };
