@@ -99,16 +99,16 @@
         });
 
         $('#search').submit(function(e) {
-          let test = $('#search').serializeArray();
-          let clean = test.filter(el => !!el.value).map(el => {
+          let search = $('#search').serializeArray();
+          let cleanSearchStr = search.filter(el => !!el.value).map(el => {
             if(el.name === "open") {
               if(el.value === "false") return {name: el.name, value: false}
             } else return el
           });
           let redirectUrl = "?"
-          clean.forEach((el, i) => {
+          cleanSearchStr.forEach((el, i) => {
             redirectUrl += `${el.name}=${el.value}`;
-            if(i < clean.length - 1) redirectUrl += "&";
+            if(i < cleanSearchStr.length - 1) redirectUrl += "&";
           });
           window.location.replace(redirectUrl);
           e.preventDefault();
