@@ -29,19 +29,52 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          
-          //fill me in too!
-          
+          assert.include(res.body, {issue_title: "Title"});
+          assert.include(res.body, {issue_text: "text"});
+          assert.include(res.body, {created_by: "Functional Test - Every field filled in"});
+          assert.include(res.body, {assigned_to: "Chai and Mocha"});
+          assert.include(res.body, {status_text: "In QA"});
+          assert.include(res.body, {open: true});
+          assert.property(res.body, "created_on");
+          assert.property(res.body, "updated_on");
+          assert.property(res.body, "_id");
           done();
         });
       });
       
       test('Required fields filled in', function(done) {
-        
+        chai.request(server)
+        .post("/api/issues/test")
+        .send({
+          issue_title: 'Title',
+          issue_text: 'text',
+          created_by: 'Functional Test - Required fields filled in',
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.include(res.body, {issue_title: "Title"});
+          assert.include(res.body, {issue_text: "text"});
+          assert.include(res.body, {created_by: "Functional Test - Required fields filled in"});
+          assert.include(res.body, {open: true});
+          assert.property(res.body, "created_on");
+          assert.property(res.body, "updated_on");
+          assert.property(res.body, "_id");
+          done();
+        })
       });
       
       test('Missing required fields', function(done) {
-        
+        chai.request(server)
+        .post("/api/issues/test")
+        .send({
+          issue_text: 'text',
+          created_by: 'Functional Test - Required fields filled in',
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.text, "Fill in all the required inputs please");
+          done();
+        })
       });
       
     });
