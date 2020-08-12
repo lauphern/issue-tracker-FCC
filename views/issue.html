@@ -26,6 +26,19 @@
           <button type="submit">Submit Issue</button>
         </form>
       </div>
+      <div id="queryIssues">
+        <br>
+        <h3>Search for a specific issue:</h3>
+        <form id="search" class="border">
+          <input type="text" name="issue_title" placeholder="Title" style="width: 320px; margin-bottom: 3px;"><br>
+          <textarea type="text" name="issue_text" placeholder="Text" style="width: 320px; height: 100px;"></textarea><br>
+          <input type="text" name="created_by" placeholder="Created by" style="width: 100px">
+          <input type="text" name="assigned_to" placeholder="Assigned to" style="width: 100px">
+          <input type="text" name="status_text" placeholder="Status text" style="width: 100px"><br>
+          <label><input type="checkbox" name="open" value="false">Closed issue</label><br>
+          <input type="submit" value="Search">
+        </form>
+      </div>
       
       <div id='issueDisplay'></div>
       
@@ -83,6 +96,22 @@
             });
             $('#issueDisplay').html(issues.join(''));
           }
+        });
+
+        $('#search').submit(function(e) {
+          let test = $('#search').serializeArray();
+          let clean = test.filter(el => !!el.value).map(el => {
+            if(el.name === "open") {
+              if(el.value === "false") return {name: el.name, value: false}
+            } else return el
+          });
+          let redirectUrl = "?"
+          clean.forEach((el, i) => {
+            redirectUrl += `${el.name}=${el.value}`;
+            if(i < clean.length - 1) redirectUrl += "&";
+          });
+          window.location.replace(redirectUrl);
+          e.preventDefault();
         });
         
         $('#newIssue').submit(function(e){
