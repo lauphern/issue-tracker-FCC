@@ -136,7 +136,7 @@ module.exports = function (app) {
             .findOneAndDelete({ _id: new ObjectId(req.body._id) })
             .then(result => {
               if (!result.value) throw new Error();
-              else res.json(`deleted ${result.value._id}`);
+              else res.send(`deleted ${result.value._id}`);
             })
             .catch(err => {
               res.status(500).send("Something went wrong! The issue couldn't be deleted");

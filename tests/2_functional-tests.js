@@ -149,11 +149,32 @@ suite('Functional Tests', function() {
       });
       
       test('One filter', function(done) {
-        
+        chai.request(server)
+        .get('/api/issues/test')
+        .query({
+          open: true
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isArray(res.body);
+          assert.include(res.body[0], {open: true});
+          done()
+        }) 
       });
       
       test('Multiple filters (test for multiple fields you know will be in the db for a return)', function(done) {
-        
+        chai.request(server)
+        .get('/api/issues/test')
+        .query({
+          open: false,
+          created_by: 'Functional Test - Multiple fields to update'
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isArray(res.body);
+          assert.include(res.body[0], {open: false, created_by: 'Functional Test - Multiple fields to update'});
+          done()
+        }) 
       });
       
     });
@@ -161,11 +182,27 @@ suite('Functional Tests', function() {
     suite('DELETE /api/issues/{project} => text', function() {
       
       test('No _id', function(done) {
-        
+        chai.request(server)
+        .delete("/api/issues/test")
+        .send({})
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.text, "Please provide a valid issue's _id.");
+          done();
+        })
       });
       
       test('Valid _id', function(done) {
-        
+        chai.request(server)
+        .delete("/api/issues/test")
+        .send({
+          _id: testId
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.equal(res.text, `deleted ${testId}`);
+          done();
+        })
       });
       
     });
