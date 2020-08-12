@@ -113,7 +113,7 @@ module.exports = function (app) {
             .findOneAndUpdate({_id: new ObjectId(_id)}, { $set: updateObj })
             .then(result => {
               if (!result.lastErrorObject.updatedExisting) throw new Error();
-              else res.json("succesfully updated");
+              else res.send("succesfully updated");
             })
             .catch(err => {
               res.status(500).send("Something went wrong! The issue couldn't be updated");
