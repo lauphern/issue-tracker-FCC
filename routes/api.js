@@ -59,7 +59,7 @@ module.exports = function (app) {
         status_text,
         open: true,
         created_on: new Date(),
-        updated: new Date(),
+        updated_on: new Date(),
       };
       MongoClient.connect(CONNECTION_STRING, (err, db) => {
         if (err) throw new Error("Couldn't connect to the database");
@@ -97,7 +97,7 @@ module.exports = function (app) {
         assigned_to,
         status_text,
         open,
-        updated: new Date(),
+        updated_on: new Date(),
       };
       for(let key in updateObj) {
         if(updateObj[key] === "" || updateObj[key] === undefined) delete updateObj[key]
