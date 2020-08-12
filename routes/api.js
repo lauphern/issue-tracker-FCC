@@ -19,12 +19,19 @@ module.exports = function (app) {
     .route("/api/issues/:project")
 
     .get(function (req, res) {
+      if(Object.keys(req.query).length > 0) {
+        var { query } = req
+        if("open" in query) {
+          if(query.open === "true") query.open = true;
+          else if(query.open === "false") query.open = false;
+        }
+      }
       const project = req.params.project;
       MongoClient.connect(CONNECTION_STRING, (err, db) => {
         if (err) throw new Error("Couldn't connect to the database");
         else {
           db.collection(project)
-            .find({})
+            .find(query ? query : {})
             .toArray()
             .then(docArr => {
               res.json(docArr);

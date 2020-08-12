@@ -37,12 +37,28 @@
             crossorigin="anonymous"></script>
     <script>
       $(function() {
-        var currentProject = window.location.pathname.replace(/\//g, "");;
+        //Let the user query the database with query params
+        if(!!window.location.search) {
+          var dataObj = {};
+          let query = window.location.search.replace(/\?/gm, "");
+          if(/\&/gm.test(query)) {
+            let queryArr = query.split(/\&/gm);
+            queryArr.forEach(el => {
+              let temp = el.split(/\=/gm);
+              dataObj[temp[0]] = temp[1];
+            })
+          } else {
+            let temp = query.split(/\=/gm);
+            dataObj[temp[0]] = temp[1];
+          }
+        }
+        var currentProject = window.location.pathname.replace(/\//g, "");
         var url = "/api/issues/"+currentProject;
         $('#projectTitle').text('All issues for: '+currentProject)
         $.ajax({
           type: "GET",
           url: url,
+          data: dataObj? dataObj : {},
           success: function(data)
           {
             var issues= [];
